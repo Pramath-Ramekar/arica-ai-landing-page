@@ -1,0 +1,19 @@
+//#region node_modules/@splinetool/runtime/build/runtime-chunk-HD7WF3XN.js
+var e = Math.fround;
+function t(e) {
+	return Math.round(1e9 * e);
+}
+function n(n, r) {
+	return function(t) {
+		let n = Math.trunc(t / 1e9), r = t - 1e9 * n;
+		return e(e(n) + e(e(r) / e(1e9)));
+	}(t(n) - t(r));
+}
+function r(e, n) {
+	return (t(e) + t(n)) / 1e9;
+}
+function i(e, n, r) {
+	return t(e) - t(n) < t(r);
+}
+//#endregion
+export { n, r, i as t };

@@ -1,0 +1,1378 @@
+<!--
+  AI-security landing page (AISE-11). Standalone hand-off build. No access to the
+  live aricatech.com repo from this environment, so this is a self-contained file
+  for the dev team to drop in at /ai-security.
+
+  Flags for review against docs/claims-policy.md (not accessible here):
+  - No vendor/model logos included, per the ticket's claims note.
+  - No specific findings or outcomes are promised anywhere on the page.
+  - Research stats (10 scans / 1,021 attempts / 320 findings / 124-probe battery,
+    OWASP LLM Top 10 2025, OWASP Agentic, MITRE ATLAS, NIST AI 100-2) are copied
+    verbatim from the live site's existing case-study entry, not invented here.
+  - Offer pricing: no real price bands were available to build from, so this
+    draft uses "scoped on the call" framing instead of fabricated numbers.
+    Swap in real bands before publishing if the business wants fixed pricing shown.
+  - Booking link is a placeholder (#booking-link-placeholder); swap for the real
+    scheduling URL. UTM params are pre-wired on the query string.
+
+  Build notes:
+  - Hero is a mounted React widget (hero-spline-widget.js/.css), built
+    separately from ./hero-spline-widget/ (Vite + React + TypeScript +
+    Tailwind + shadcn Card/Spotlight + @splinetool/react-spline), and
+    bundled as an ES module. It renders its own headline/subhead/CTA and a
+    live 3D Spline scene (currently a public placeholder scene, swap the
+    `scene` URL in HeroSplineDemo.tsx and rebuild once a real one exists).
+    ~8MB across ~104 code-split files — real cost of an in-browser 3D
+    engine, budget for it same as a hero video.
+  - All motion in the rest of the page (reveals, count-ups, tilt, magnetic
+    buttons) checks prefers-reduced-motion and pointer capability first.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Security Testing | Arica Tech</title>
+<meta name="description" content="Adversarial testing for your LLMs, AI agents, and RAG pipelines. Get the exact attack input, the captured impact, the fix path, and a re-test, mapped to OWASP LLM Top 10, MITRE ATLAS, and NIST AI 100-2." />
+<link rel="canonical" href="https://www.aricatech.com/ai-security" />
+<meta name="robots" content="index, follow, max-image-preview:large" />
+<meta name="author" content="Arica Tech Security LLP" />
+<meta name="theme-color" content="#07070a" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="AI Security Testing | Arica Tech" />
+<meta property="og:description" content="Adversarial testing for your LLMs, AI agents, and RAG pipelines. Get the exact attack input, the captured impact, the fix path, and a re-test." />
+<meta property="og:url" content="https://www.aricatech.com/ai-security" />
+<meta property="og:site_name" content="Arica Tech Security" />
+<meta property="og:image" content="https://www.aricatech.com/og-social.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Arica Tech Security, AI security testing" />
+<meta property="og:locale" content="en_US" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@aricatech" />
+<meta name="twitter:title" content="AI Security Testing | Arica Tech" />
+<meta name="twitter:description" content="Adversarial testing for your LLMs, AI agents, and RAG pipelines. Get the exact attack input, the captured impact, the fix path, and a re-test." />
+<meta name="twitter:image" content="https://www.aricatech.com/og-social.jpg" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.aricatech.com/#organization",
+      "name": "Arica Tech Security LLP",
+      "url": "https://www.aricatech.com/",
+      "logo": "https://www.aricatech.com/og-social.jpg",
+      "email": "contact@aricatech.com",
+      "telephone": "+91-70911-75596",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Office 1204, Kotibhaskar & Mahati Residency",
+        "addressLocality": "Pune",
+        "addressCountry": "IN"
+      }
+    },
+    {
+      "@type": "Service",
+      "name": "AI Security Testing",
+      "url": "https://www.aricatech.com/ai-security",
+      "serviceType": "Adversarial AI and LLM security testing",
+      "areaServed": "Worldwide",
+      "provider": { "@id": "https://www.aricatech.com/#organization" },
+      "description": "Adversarial testing for LLMs, AI agents, and RAG pipelines, mapped to OWASP LLM Top 10, OWASP Agentic, MITRE ATLAS, and NIST AI 100-2.",
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "AI security testing engagements",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Screening Assessment",
+              "description": "A focused adversarial pass on a single production model, agent, or RAG pipeline."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Focused Engagement",
+              "description": "Adversarial testing across the full AI surface, delivered as a report mapped to OWASP LLM Top 10, OWASP Agentic, and MITRE ATLAS."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Continuous Red-Teaming",
+              "description": "Re-testing on a cycle tied to release cadence, so new releases do not quietly reopen closed findings."
+            }
+          }
+        ]
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What do you need from us to scope this?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Which model(s) or agents are in scope, how they're deployed, and what \"in production\" means for your team. We work out the rest on the call."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do you need access to our model weights or infrastructure?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Depends on scope. Some engagements run entirely against your live endpoints, black-box. We agree the access model before any testing starts."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will you tell us what you found before you tell us how to fix it?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Every finding ships with a fix path in the same report. We re-test after you patch to confirm it holds."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How is this different from a general penetration test?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A general VAPT covers your applications and infrastructure. This is adversarial testing aimed specifically at models, prompts, agent tool-use, and retrieval: a different attack surface with different failure modes."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How fast can you start?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We normally reply within one business day of the screening call, with a scoped proposal to follow."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<style>
+  :root{
+    --bg:#07070a;
+    --surface:#0d0d10;
+    --surface-raised:#111114;
+    --border:rgba(242,241,235,0.10);
+    --border-strong:rgba(242,241,235,0.20);
+    --text:#f2f1eb;
+    --text-dim:#a3a29a;
+    --text-faint:#6c6b64;
+    --accent:#ff7049;
+    --accent-soft:rgba(255,112,73,0.14);
+    --accent-line:rgba(255,112,73,0.35);
+    --mono:'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --sans:'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+    --maxw:1120px;
+  }
+
+  *{box-sizing:border-box;}
+  html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1.5;
+  }
+  img{max-width:100%;display:block;}
+  a{color:inherit;text-decoration:none;}
+  ::selection{background:var(--accent);color:#0a0a0a;}
+  section[id]{scroll-margin-top:80px;}
+
+  .wrap{
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:0 clamp(20px,4vw,48px);
+  }
+
+  .eyebrow{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-family:var(--mono);
+    font-size:11.5px;
+    font-weight:500;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--accent);
+  }
+  .eyebrow::before{
+    content:"";
+    width:14px;
+    height:1px;
+    background:var(--accent);
+    display:inline-block;
+  }
+
+  h1,h2,h3{
+    margin:0;
+    font-weight:500;
+    letter-spacing:-0.03em;
+    text-wrap:balance;
+    color:var(--text);
+  }
+
+  .section{
+    border-top:1px solid var(--border);
+    padding:clamp(56px,9vw,104px) 0;
+  }
+  .section-head{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:20px;
+    margin-bottom:clamp(36px,5vw,56px);
+  }
+  @media(min-width:860px){
+    .section-head{grid-template-columns:1.1fr 0.9fr; align-items:end;}
+  }
+  .section-head h2{
+    font-size:clamp(30px,4vw,44px);
+    line-height:1.08;
+  }
+  .section-head .lede{
+    color:var(--text-dim);
+    font-size:16.5px;
+    line-height:1.6;
+    max-width:46ch;
+  }
+
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    height:48px;
+    padding:0 22px;
+    border:1px solid var(--border-strong);
+    font-size:13.5px;
+    font-weight:600;
+    letter-spacing:0.01em;
+    white-space:nowrap;
+    transition:border-color .15s ease, background .15s ease, transform .25s cubic-bezier(.2,.9,.3,1);
+    will-change:transform;
+  }
+  .btn-primary{
+    background:var(--accent);
+    color:#0a0705;
+    border-color:var(--accent);
+  }
+  .btn-primary:hover{background:#ff8862;border-color:#ff8862;}
+  .btn-ghost:hover{border-color:var(--border-strong);background:rgba(242,241,235,0.04);}
+  .btn svg{width:14px;height:14px;flex:none;}
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:rgba(7,7,10,0.72);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+    transition:background .25s ease, border-color .25s ease;
+  }
+  header.scrolled{
+    background:rgba(7,7,10,0.92);
+    border-bottom-color:var(--border-strong);
+  }
+  header .wrap{
+    height:76px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    transition:height .2s ease;
+  }
+  header.scrolled .wrap{height:64px;}
+  .logo{
+    display:flex;
+    flex-direction:column;
+    line-height:1.1;
+  }
+  .logo span:first-child{
+    font-size:19px;
+    font-weight:700;
+    letter-spacing:0.02em;
+  }
+  .logo span:last-child{
+    font-family:var(--mono);
+    font-size:9px;
+    letter-spacing:0.16em;
+    color:var(--text-faint);
+  }
+  .header-tag{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    display:none;
+  }
+  @media(min-width:640px){.header-tag{display:block;}}
+
+  /* ---------- hero ---------- */
+  .hero{
+    padding:0;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image:radial-gradient(circle, rgba(242,241,235,0.05) 1px, transparent 1px);
+    background-size:26px 26px;
+    -webkit-mask-image:radial-gradient(ellipse 90% 80% at 50% 0%, black, transparent 85%);
+    mask-image:radial-gradient(ellipse 90% 80% at 50% 0%, black, transparent 85%);
+    pointer-events:none;
+    z-index:0;
+  }
+  .hero .wrap{position:relative;z-index:2;}
+  .hero-visual{
+    position:absolute;
+    inset:0;
+    z-index:1;
+  }
+  .hero-visual img{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:78% 35%;
+    -webkit-mask-image:linear-gradient(to left, black 40%, transparent 82%);
+    mask-image:linear-gradient(to left, black 40%, transparent 82%);
+    pointer-events:none;
+  }
+  .hero-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:16px;
+    flex-wrap:wrap;
+    margin-bottom:34px;
+  }
+  .hero-top .meta{
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--text-faint);
+    letter-spacing:0.04em;
+  }
+  h1.headline{
+    font-size:clamp(38px,6.4vw,74px);
+    line-height:0.98;
+    letter-spacing:-0.035em;
+    max-width:16ch;
+  }
+  h1.headline .dim{color:var(--text-dim);}
+  .hero-sub{
+    margin-top:26px;
+    font-size:clamp(16px,1.7vw,19px);
+    line-height:1.6;
+    color:var(--text-dim);
+    max-width:52ch;
+  }
+  .hero-cta{
+    margin-top:38px;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    flex-wrap:wrap;
+  }
+  .hero-cta .note{
+    font-size:12.5px;
+    color:var(--text-faint);
+  }
+
+  /* ---------- scroll reveal ---------- */
+  .reveal{
+    opacity:0;
+    transform:translateY(18px);
+    transition:opacity .7s cubic-bezier(.16,.8,.24,1) var(--d,0ms),
+               transform .7s cubic-bezier(.16,.8,.24,1) var(--d,0ms);
+  }
+  .reveal.is-visible{opacity:1;transform:none;}
+
+  /* ---------- stat tiles ---------- */
+  .stat-row{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    border:1px solid var(--border);
+  }
+  .stat-tile{
+    padding:26px 24px;
+    border-left:1px solid var(--border);
+    transition:background .25s ease;
+  }
+  .stat-tile:hover{background:rgba(242,241,235,0.025);}
+  .stat-tile:first-child{border-left:none;}
+  .stat-tile .num{
+    font-size:clamp(30px,3.4vw,42px);
+    font-weight:600;
+    letter-spacing:-0.02em;
+    color:var(--text);
+    font-variant-numeric:tabular-nums;
+  }
+  .stat-tile .label{
+    margin-top:8px;
+    font-size:13.5px;
+    line-height:1.5;
+    color:var(--text-dim);
+  }
+  .stat-tile .src{
+    margin-top:10px;
+    font-family:var(--mono);
+    font-size:10.5px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--text-faint);
+  }
+  @media(max-width:640px){
+    .stat-tile{border-left:none;border-top:1px solid var(--border);}
+    .stat-tile:first-child{border-top:none;}
+  }
+
+  .bridge{
+    margin-top:32px;
+    max-width:64ch;
+    color:var(--text-dim);
+    font-size:15.5px;
+    line-height:1.7;
+  }
+  .bridge strong{color:var(--text);font-weight:600;}
+
+  /* ---------- receipts (numbered evidence cards) ---------- */
+  .receipts{
+    display:flex;
+    flex-direction:column;
+  }
+  .receipt{
+    display:grid;
+    grid-template-columns:56px 1fr;
+    gap:24px;
+    padding:28px 0;
+    border-top:1px solid var(--border);
+  }
+  .receipt:first-child{border-top:none;}
+  .receipt .idx{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--accent);
+    padding-top:3px;
+  }
+  .receipt h3{
+    font-size:18px;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+  .receipt p{
+    margin:8px 0 0;
+    color:var(--text-dim);
+    font-size:14.5px;
+    line-height:1.6;
+    max-width:56ch;
+  }
+  .receipt .tags{
+    margin-top:14px;
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .tag{
+    font-family:var(--mono);
+    font-size:10.5px;
+    letter-spacing:0.03em;
+    padding:4px 9px;
+    border:1px solid var(--border-strong);
+    color:var(--text-dim);
+  }
+
+  .bracketed{position:relative;}
+  .bracketed::before,.bracketed::after{
+    content:"";
+    position:absolute;
+    width:16px;
+    height:16px;
+    border-color:var(--accent);
+    border-style:solid;
+    opacity:.55;
+    pointer-events:none;
+  }
+  .bracketed::before{top:-1px;left:-1px;border-width:1.5px 0 0 1.5px;}
+  .bracketed::after{bottom:-1px;right:-1px;border-width:0 1.5px 1.5px 0;}
+
+  .tilt{transition:transform .35s cubic-bezier(.2,.9,.3,1);transform-style:preserve-3d;will-change:transform;}
+
+  .evidence-card{
+    margin-top:40px;
+    border:1px solid var(--border-strong);
+    background:var(--surface);
+  }
+  .evidence-card .bar{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:12px 16px;
+    border-bottom:1px solid var(--border);
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--text-faint);
+    letter-spacing:0.04em;
+  }
+  .evidence-card .bar span.dot{
+    width:7px;height:7px;border-radius:50%;background:var(--text-faint);opacity:.5;
+  }
+  .evidence-card pre{
+    margin:0;
+    padding:20px;
+    font-family:var(--mono);
+    font-size:12.5px;
+    line-height:1.75;
+    overflow-x:auto;
+    color:var(--text-dim);
+    white-space:pre;
+  }
+  .evidence-card pre .k{color:var(--accent);}
+  .evidence-card pre .v{color:var(--text);}
+
+  /* ---------- research ---------- */
+  .research-band{
+    border:1px solid var(--border);
+    padding:clamp(28px,4vw,44px);
+  }
+  .research-band .top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:24px;
+    flex-wrap:wrap;
+  }
+  .research-band h2{
+    font-size:clamp(26px,3.4vw,36px);
+    max-width:18ch;
+  }
+  .research-band .body-copy{
+    margin-top:18px;
+    color:var(--text-dim);
+    font-size:15px;
+    line-height:1.7;
+    max-width:62ch;
+  }
+  .research-stats{
+    margin-top:32px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:1px;
+    background:var(--border);
+  }
+  .research-stats .cell{
+    background:var(--bg);
+    padding:20px;
+  }
+  .research-stats .num{
+    font-size:clamp(28px,3vw,36px);
+    font-weight:600;
+    color:var(--accent);
+    font-variant-numeric:tabular-nums;
+  }
+  .research-stats .label{
+    margin-top:6px;
+    font-size:12.5px;
+    color:var(--text-dim);
+  }
+  .research-foot{
+    margin-top:22px;
+    font-size:11.5px;
+    color:var(--text-faint);
+    line-height:1.6;
+    max-width:70ch;
+  }
+  .research-link{
+    margin-top:20px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--text);
+    border-bottom:1px solid var(--border-strong);
+    padding-bottom:2px;
+  }
+  .research-link svg{width:12px;height:12px;}
+
+  .brand-relay{margin-top:36px;}
+  .relay-label{
+    font-family:var(--mono);
+    font-size:11.5px;
+    font-weight:500;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--accent);
+  }
+  .relay-grid{
+    margin-top:16px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+    gap:1px;
+    background:var(--border);
+  }
+  .relay-cell{
+    background:var(--bg);
+    padding:18px 20px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    transition:background .25s ease;
+  }
+  .relay-cell:hover{background:var(--surface);}
+  .relay-icon{
+    flex:none;
+    width:22px;height:22px;
+    color:var(--text-faint);
+    transition:color .25s ease;
+  }
+  .relay-cell:hover .relay-icon{color:var(--accent);}
+  .relay-name{
+    font-size:14px;
+    font-weight:600;
+    color:var(--text);
+  }
+  .relay-model{
+    margin-top:2px;
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--text-faint);
+    letter-spacing:0.02em;
+  }
+
+  /* ---------- offers ---------- */
+  .offers{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    border:1px solid var(--border);
+  }
+  .offer{
+    padding:32px 28px;
+    border-left:1px solid var(--border);
+    display:flex;
+    flex-direction:column;
+    background:var(--bg);
+    position:relative;
+  }
+  .offer:first-child{border-left:none;}
+  @media(max-width:900px){
+    .offer{border-left:none;border-top:1px solid var(--border);}
+    .offer:first-child{border-top:none;}
+  }
+  .offer .idx{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--accent);
+    letter-spacing:0.04em;
+  }
+  .offer h3{
+    margin-top:14px;
+    font-size:21px;
+    font-weight:600;
+  }
+  .offer .scope{
+    margin-top:6px;
+    font-size:13px;
+    color:var(--text-faint);
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+  }
+  .offer p{
+    margin-top:16px;
+    font-size:14px;
+    line-height:1.65;
+    color:var(--text-dim);
+    flex:1;
+  }
+  .offer .price{
+    margin-top:20px;
+    padding-top:16px;
+    border-top:1px solid var(--border);
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--text);
+  }
+  .offer .price span{
+    display:block;
+    margin-top:4px;
+    font-size:12px;
+    font-weight:400;
+    color:var(--text-faint);
+  }
+
+  /* ---------- faq ---------- */
+  .faq-item{
+    border-top:1px solid var(--border);
+    padding:22px 0;
+  }
+  .faq-item:last-child{border-bottom:1px solid var(--border);}
+  .faq-item h3{
+    font-size:16px;
+    font-weight:600;
+    display:flex;
+    gap:14px;
+  }
+  .faq-item .idx{color:var(--accent);font-family:var(--mono);font-size:13px;}
+  .faq-item p{
+    margin:10px 0 0 30px;
+    color:var(--text-dim);
+    font-size:14.5px;
+    line-height:1.65;
+    max-width:60ch;
+  }
+
+  /* ---------- final cta ---------- */
+  .final-cta{
+    text-align:left;
+  }
+  .final-cta h2{
+    font-size:clamp(32px,5vw,52px);
+    line-height:1.04;
+    max-width:14ch;
+  }
+  .final-cta .lede{
+    margin-top:18px;
+    color:var(--text-dim);
+    font-size:16px;
+    max-width:48ch;
+    line-height:1.6;
+  }
+  .final-cta .actions{
+    margin-top:34px;
+    display:flex;
+    gap:16px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+
+  /* ---------- footer ---------- */
+  footer{
+    border-top:1px solid var(--border);
+    background:#08080a;
+  }
+  footer .wrap{
+    padding:44px clamp(20px,4vw,48px);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:20px;
+  }
+  footer .foot-left{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  footer .foot-left a{font-weight:700;font-size:15px;}
+  footer .foot-left span{font-size:12px;color:var(--text-faint);}
+  footer .foot-links{
+    display:flex;
+    gap:22px;
+    flex-wrap:wrap;
+    font-size:12.5px;
+    color:var(--text-dim);
+  }
+  footer .foot-links a:hover{color:var(--text);}
+
+  /* ---------- section progress rail ---------- */
+  .rail{
+    position:fixed;
+    right:22px;
+    top:50%;
+    transform:translateY(-50%);
+    z-index:40;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:14px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .35s ease;
+  }
+  .rail.visible{opacity:1;pointer-events:auto;}
+  .rail a{
+    font-family:var(--mono);
+    font-size:10px;
+    color:var(--text-faint);
+    letter-spacing:0.05em;
+    padding:4px;
+    position:relative;
+    transition:color .2s ease;
+  }
+  .rail a::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:100%;
+    transform:translateX(-50%);
+    width:1px;
+    height:14px;
+    background:var(--border-strong);
+  }
+  .rail a:last-child::after{display:none;}
+  .rail a.active{color:var(--accent);}
+  @media(max-width:1080px){.rail{display:none;}}
+
+  /* ---------- grain ---------- */
+  .grain{
+    position:fixed;
+    inset:0;
+    z-index:1000;
+    pointer-events:none;
+    opacity:0.035;
+    mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- whatsapp fab ---------- */
+  .wa-fab{
+    position:fixed;
+    right:24px;
+    bottom:24px;
+    z-index:1001;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    transition:transform .25s cubic-bezier(.2,.9,.3,1);
+  }
+  .wa-fab:hover{transform:translateY(-3px);}
+  .wa-fab-label{
+    font-family:var(--mono);
+    font-size:12px;
+    font-weight:500;
+    letter-spacing:0.01em;
+    color:var(--text);
+    background:rgba(13,13,16,0.85);
+    border:1px solid var(--border-strong);
+    padding:8px 13px;
+    white-space:nowrap;
+    backdrop-filter:blur(6px);
+  }
+  .wa-fab-icon{
+    position:relative;
+    flex:none;
+    width:58px;
+    height:58px;
+    border-radius:50%;
+    background:#25d366;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 10px 26px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06);
+  }
+  .wa-fab-icon svg{width:29px;height:29px;fill:#fff;}
+  .wa-fab-icon::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    border:2px solid rgba(37,211,102,0.55);
+    animation:wa-pulse 2.4s ease-out infinite;
+    pointer-events:none;
+  }
+  @keyframes wa-pulse{
+    0%{transform:scale(1);opacity:.7;}
+    100%{transform:scale(1.6);opacity:0;}
+  }
+  @media(max-width:640px){
+    .wa-fab{right:16px;bottom:16px;gap:8px;}
+    .wa-fab-label{font-size:11px;padding:7px 10px;}
+    .wa-fab-icon{width:52px;height:52px;}
+    .wa-fab-icon svg{width:26px;height:26px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    .reveal{transition:none;opacity:1;transform:none;}
+    .tilt{transition:none;}
+    .wa-fab-icon::before{animation:none;display:none;}
+  }
+</style>
+<link rel="stylesheet" href="hero-spline-widget.css?v=8">
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+
+<a class="wa-fab" aria-label="Chat on WhatsApp to book a call"
+   href="https://wa.me/917091175596?text=Hi%2C%20I%27d%20like%20to%20book%20an%20inquiry%20call%20about%20AI%20security%20testing."
+   target="_blank" rel="noopener">
+  <span class="wa-fab-label">Click to book</span>
+  <span class="wa-fab-icon">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.87 9.87 0 0 0 4.74 1.2h.01c5.46 0 9.9-4.45 9.9-9.91 0-2.64-1.03-5.13-2.9-7-1.87-1.88-4.36-2.91-7-2.91Zm0 1.67c2.21 0 4.28.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.55-3.7 8.24-8.25 8.24a8.3 8.3 0 0 1-4.19-1.13l-.3-.18-3.12.82.83-3.06-.2-.32a8.24 8.24 0 0 1-1.26-4.4c0-4.54 3.7-8.21 8.25-8.21Zm-3.51 3.18c-.16 0-.43.06-.66.31-.22.26-.86.87-.86 2.12 0 1.25.89 2.46.99 2.63.14.17 1.76 2.7 4.31 3.81 2.11.92 2.54.75 3 .71.46-.04 1.47-.6 1.68-1.19.21-.59.21-1.09.14-1.2-.06-.1-.23-.17-.48-.29-.26-.13-1.5-.75-1.74-.82-.23-.1-.42-.14-.57.1-.16.25-.63.8-.77.96-.14.16-.29.17-.53.05-.24-.13-1.06-.4-1.87-1.28-.76-.67-1.28-1.5-1.42-1.74-.14-.24-.02-.37.1-.49.11-.12.26-.3.34-.45.13-.15.17-.26.25-.42.08-.18.04-.32-.02-.44-.06-.13-.57-1.37-.79-1.88-.22-.5-.44-.43-.6-.44-.15-.01-.31-.01-.37-.01Z"/></svg>
+  </span>
+</a>
+
+<nav class="rail" aria-label="Page sections">
+  <a href="#the-gap" data-label="The gap">01</a>
+  <a href="#receipts" data-label="What you get">02</a>
+  <a href="#research" data-label="Research">03</a>
+  <a href="#offers" data-label="Offers">04</a>
+  <a href="#faq" data-label="FAQ">05</a>
+  <a href="#booking" data-label="Book a call">06</a>
+</nav>
+
+<header>
+  <div class="wrap">
+    <a class="logo" href="https://www.aricatech.com/" aria-label="Arica Tech home">
+      <span>ARICA</span>
+      <span>TECH SECURITY LLP</span>
+    </a>
+    <div class="header-tag">AI Security Testing</div>
+    <a class="btn btn-primary btn-magnetic" href="#booking">
+      Book a screening call
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg>
+    </a>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <!-- Mounted by hero-spline-widget.js (React + shadcn Card/Spotlight +
+           @splinetool/react-spline). That bundle renders its own headline,
+           subhead, and CTA, so no static copy is duplicated here. -->
+      <div id="hero-spline-root"></div>
+    </div>
+  </section>
+
+  <!-- THE GAP -->
+  <section class="section" id="the-gap">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>Everyone shipped it. Almost no one tested it.</h2>
+        <p class="lede">The pace of AI adoption has outrun the pace of security review, and the exposure is sitting in production right now.</p>
+      </div>
+
+      <div class="stat-row reveal-group">
+        <div class="stat-tile reveal">
+          <div class="num"><span data-count-to="82" data-suffix="%">0%</span></div>
+          <div class="label">of organisations already run AI agents in production</div>
+          <div class="src">Source: SailPoint</div>
+        </div>
+        <div class="stat-tile reveal">
+          <div class="num"><span data-count-to="44" data-suffix="%">0%</span></div>
+          <div class="label">have a formal policy governing what those agents are allowed to do</div>
+          <div class="src">Source: SailPoint</div>
+        </div>
+        <div class="stat-tile reveal">
+          <div class="num"><span data-count-to="2" data-suffix=" in 3">0</span></div>
+          <div class="label">build their AI systems in-house, outside vendor security review</div>
+          <div class="src">Source: Team8</div>
+        </div>
+      </div>
+
+      <p class="bridge reveal">That gap, <strong>fast deployment, no adversarial testing</strong>, is where AI incidents are actually coming from. Closing it takes the same rigor you already apply to infrastructure and applications, pointed at prompts, agent tool-calls, and retrieval pipelines instead.</p>
+    </div>
+  </section>
+
+  <!-- WHAT YOU GET -->
+  <section class="section" id="receipts">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>What you get isn't a report. It's receipts.</h2>
+        <p class="lede">Every finding follows the same chain, from the attack we ran to proof it's closed.</p>
+      </div>
+
+      <div class="receipts reveal-group">
+        <div class="receipt reveal">
+          <div class="idx">01</div>
+          <div>
+            <h3>The exact attack input</h3>
+            <p>The literal prompt, payload, or tool-call sequence that got through: reproducible, not paraphrased.</p>
+          </div>
+        </div>
+        <div class="receipt reveal">
+          <div class="idx">02</div>
+          <div>
+            <h3>Captured impact</h3>
+            <p>The logged response, action, or data the system actually produced: what an attacker walks away with.</p>
+          </div>
+        </div>
+        <div class="receipt reveal">
+          <div class="idx">03</div>
+          <div>
+            <h3>Framework mapping</h3>
+            <p>Every finding is tagged against the taxonomy your team already reports against.</p>
+            <div class="tags">
+              <span class="tag">OWASP LLM TOP 10 · 2025</span>
+              <span class="tag">OWASP AGENTIC</span>
+              <span class="tag">MITRE ATLAS</span>
+              <span class="tag">NIST AI 100-2</span>
+            </div>
+          </div>
+        </div>
+        <div class="receipt reveal">
+          <div class="idx">04</div>
+          <div>
+            <h3>A fix path</h3>
+            <p>A specific mitigation for this system and this finding, not a generic recommendation copied across every report.</p>
+          </div>
+        </div>
+        <div class="receipt reveal">
+          <div class="idx">05</div>
+          <div>
+            <h3>Re-test</h3>
+            <p>Once the fix ships, we run the same attack again and confirm it holds. Closed means closed.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="evidence-card bracketed tilt reveal">
+        <div class="bar"><span class="dot"></span> finding_047.log · illustrative format</div>
+        <pre><span class="k">attack_input</span>  <span class="v">= "..." (redacted, reproducible prompt / tool-call chain)</span>
+<span class="k">system</span>        <span class="v">= customer support agent, tool-use enabled</span>
+<span class="k">captured_impact</span> <span class="v">= agent invoked internal refund tool outside policy limits</span>
+<span class="k">mapped_to</span>     <span class="v">= OWASP LLM06 · Excessive Agency  /  MITRE ATLAS AML.T0053</span>
+<span class="k">fix_path</span>      <span class="v">= scoped tool permissions + human approval over threshold</span>
+<span class="k">re-test</span>       <span class="v">= PASSED, 2026-xx-xx</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESEARCH -->
+  <section class="section" id="research">
+    <div class="wrap">
+      <div class="research-band bracketed tilt reveal">
+        <div class="top">
+          <span class="eyebrow">Independent Research · September 2026</span>
+        </div>
+        <h2 style="margin-top:18px;">We tested ten models against ourselves before we tested anyone else's.</h2>
+        <p class="body-copy">We evaluated open-weight models on hardware we controlled, using a 124-probe battery mapped to OWASP LLM Top 10 2025, OWASP Agentic, MITRE ATLAS, and NIST AI 100-2. The run produced raw detector findings for analyst review, the same method we bring to client engagements.</p>
+
+        <div class="research-stats">
+          <div class="cell">
+            <div class="num"><span data-count-to="10">0</span></div>
+            <div class="label">Model scans</div>
+          </div>
+          <div class="cell">
+            <div class="num"><span data-count-to="1021">0</span></div>
+            <div class="label">Probe attempts</div>
+          </div>
+          <div class="cell">
+            <div class="num"><span data-count-to="320">0</span></div>
+            <div class="label">Raw findings</div>
+          </div>
+          <div class="cell">
+            <div class="num"><span data-count-to="124">0</span></div>
+            <div class="label">Probes per battery</div>
+          </div>
+        </div>
+
+        <div class="brand-relay reveal">
+          <div class="relay-label">Systems we broke</div>
+          <div class="relay-grid">
+            <div class="relay-cell">
+              <svg class="relay-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <circle cx="12" cy="4.5" r="2.1"/><circle cx="18.5" cy="8.2" r="2.1"/>
+                <circle cx="18.5" cy="15.8" r="2.1"/><circle cx="12" cy="19.5" r="2.1"/>
+                <circle cx="5.5" cy="15.8" r="2.1"/><circle cx="5.5" cy="8.2" r="2.1"/>
+              </svg>
+              <div>
+                <div class="relay-name">OpenAI</div>
+                <div class="relay-model">gpt-oss-20B</div>
+              </div>
+            </div>
+            <div class="relay-cell">
+              <svg class="relay-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 3 20 8v8l-8 5-8-5V8Z"/><path d="M12 3v18M4 8l8 5 8-5"/>
+              </svg>
+              <div>
+                <div class="relay-name">Qwen</div>
+                <div class="relay-model">Qwen 2.5 &middot; 3 &middot; 3.5</div>
+              </div>
+            </div>
+            <div class="relay-cell">
+              <svg class="relay-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="8"/>
+                <rect x="3" y="13" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/>
+              </svg>
+              <div>
+                <div class="relay-name">Microsoft</div>
+                <div class="relay-model">Phi-4</div>
+              </div>
+            </div>
+            <div class="relay-cell">
+              <svg class="relay-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+                <path d="M4 12c0-2.5 1.8-4.5 4-4.5s3.2 2 4 4.5c.8 2.5 1.8 4.5 4 4.5s4-2 4-4.5-1.8-4.5-4-4.5-3.2 2-4 4.5c-.8 2.5-1.8 4.5-4 4.5s-4-2-4-4.5Z"/>
+              </svg>
+              <div>
+                <div class="relay-name">Meta</div>
+                <div class="relay-model">Llama 3.1 &middot; 3.2</div>
+              </div>
+            </div>
+            <div class="relay-cell">
+              <svg class="relay-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M3 5h4v4H3zM8 5h4v4H8zM13 5h4v4h-4zM18 5h3v4h-3z" opacity=".9"/>
+                <path d="M8 10h4v4H8zM13 10h4v4h-4z"/>
+                <path d="M13 15h4v4h-4zM18 15h3v4h-3z" opacity=".6"/>
+              </svg>
+              <div>
+                <div class="relay-name">Mistral AI</div>
+                <div class="relay-model">Mistral 7B</div>
+              </div>
+            </div>
+            <div class="relay-cell">
+              <svg class="relay-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M21 12.2c0-.7-.06-1.4-.18-2.05H12v3.88h5.05c-.22 1.18-.9 2.18-1.9 2.86v2.38h3.07C19.98 17.7 21 15.2 21 12.2Z"/>
+                <path d="M12 21c2.43 0 4.47-.8 5.96-2.17l-3.07-2.38c-.85.57-1.94.9-2.89.9-2.22 0-4.1-1.5-4.77-3.51H4.06v2.45C5.55 18.98 8.55 21 12 21Z"/>
+                <path d="M7.23 13.84A5.4 5.4 0 0 1 6.94 12c0-.64.11-1.26.29-1.84V7.71H4.06A9 9 0 0 0 3 12c0 1.45.35 2.83.96 4.05l3.27-2.55v.34Z"/>
+                <path d="M12 6.65c1.32 0 2.5.45 3.44 1.34l2.58-2.58C16.46 3.9 14.42 3 12 3 8.55 3 5.55 5.02 4.06 7.71l3.17 2.45C7.9 8.15 9.78 6.65 12 6.65Z"/>
+              </svg>
+              <div>
+                <div class="relay-name">Google</div>
+                <div class="relay-model">Gemma 3 4B</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <a class="research-link" href="https://www.aricatech.com/case-studies#ai-model-security-research">
+          Read the research note
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg>
+        </a>
+
+        <p class="research-foot">Controlled model-level testing on hardware we controlled, not an intrusion into any provider's service. Results are specific to the tested versions, prompts, runtime, and harness, and are not universal model rankings.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- OFFERS -->
+  <section class="section" id="offers">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>Three ways to start.</h2>
+        <p class="lede">Every engagement starts with the same 20-minute call: it's how we scope which one fits.</p>
+      </div>
+
+      <div class="offers reveal-group">
+        <div class="offer tilt reveal">
+          <div class="idx">01</div>
+          <h3>Screening Assessment</h3>
+          <div class="scope">One model / agent, one sprint</div>
+          <p>A focused adversarial pass on a single production model, agent, or RAG pipeline. Fast enough to run against something you're shipping this quarter.</p>
+          <div class="price">Scoped on the call<span>Fixed scope, fixed timeline</span></div>
+        </div>
+        <div class="offer tilt reveal">
+          <div class="idx">02</div>
+          <h3>Focused Engagement</h3>
+          <div class="scope">Full AI surface, mapped report</div>
+          <p>Adversarial testing across your full AI surface (models, agent tool-use, and retrieval) delivered as a report mapped to OWASP LLM Top 10, OWASP Agentic, and MITRE ATLAS.</p>
+          <div class="price">Scoped on the call<span>Priced per surface tested</span></div>
+        </div>
+        <div class="offer tilt reveal">
+          <div class="idx">03</div>
+          <h3>Continuous Red-Teaming</h3>
+          <div class="scope">Tied to your release cadence</div>
+          <p>Re-testing on a cycle that matches how often your models and agents actually change, so new releases don't quietly reopen closed findings.</p>
+          <div class="price">Scoped on the call<span>Retainer, billed quarterly</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" id="faq">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>Before we begin.</h2>
+        <p class="lede">Straight answers to what teams usually ask before the call.</p>
+      </div>
+
+      <div class="reveal-group">
+        <div class="faq-item reveal">
+          <h3><span class="idx">01</span> What do you need from us to scope this?</h3>
+          <p>Which model(s) or agents are in scope, how they're deployed, and what "in production" means for your team. We work out the rest on the call.</p>
+        </div>
+        <div class="faq-item reveal">
+          <h3><span class="idx">02</span> Do you need access to our model weights or infrastructure?</h3>
+          <p>Depends on scope. Some engagements run entirely against your live endpoints, black-box. We agree the access model before any testing starts.</p>
+        </div>
+        <div class="faq-item reveal">
+          <h3><span class="idx">03</span> Will you tell us what you found before you tell us how to fix it?</h3>
+          <p>No. Every finding ships with a fix path in the same report. We re-test after you patch to confirm it holds.</p>
+        </div>
+        <div class="faq-item reveal">
+          <h3><span class="idx">04</span> How is this different from a general penetration test?</h3>
+          <p>A general VAPT covers your applications and infrastructure. This is adversarial testing aimed specifically at models, prompts, agent tool-use, and retrieval: a different attack surface with different failure modes.</p>
+        </div>
+        <div class="faq-item reveal">
+          <h3><span class="idx">05</span> How fast can you start?</h3>
+          <p>We normally reply within one business day of the screening call, with a scoped proposal to follow.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="section final-cta" id="booking">
+    <div class="wrap reveal-group">
+      <span class="eyebrow reveal">The next move is yours</span>
+      <h2 class="reveal" style="margin-top:18px;">Find out what an attacker gets.</h2>
+      <p class="lede reveal">Twenty minutes. Tell us what you've shipped, and we'll tell you honestly whether this is worth testing right now.</p>
+      <div class="actions reveal">
+        <a class="btn btn-primary btn-magnetic" id="booking-link-placeholder"
+           href="https://cal.com/aricatech/ai-security-screening?utm_source=cold-email&utm_medium=email&utm_campaign=ai-security-outbound"
+           target="_blank" rel="noopener">
+          Book a 20-minute screening call
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg>
+        </a>
+        <span class="note">contact@aricatech.com · +91 70911 75596</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-left">
+      <a href="https://www.aricatech.com/">Arica Tech Security</a>
+      <span>Office 1204, Kotibhaskar &amp; Mahati Residency, Pune · India / Worldwide</span>
+    </div>
+    <div class="foot-links">
+      <a href="https://www.aricatech.com/legal/privacy-policy">Privacy Policy</a>
+      <a href="https://www.aricatech.com/legal/cookies-policy">Cookies Policy</a>
+      <a href="https://www.aricatech.com/legal/information-security-policy">Information Security Policy</a>
+      <a href="mailto:contact@aricatech.com">contact@aricatech.com</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hoverCapable = window.matchMedia('(hover: hover)').matches;
+
+  /* ---------- staggered reveal ---------- */
+  document.querySelectorAll('.reveal-group').forEach(function(group){
+    var children = group.querySelectorAll(':scope > .reveal');
+    children.forEach(function(child, i){ child.style.setProperty('--d', Math.min(i * 70, 420) + 'ms'); });
+  });
+
+  if (reduceMotion) {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('is-visible'); });
+  } else if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting) { entry.target.classList.add('is-visible'); io.unobserve(entry.target); }
+      });
+    }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('is-visible'); });
+  }
+
+  /* ---------- count-up numbers ---------- */
+  function formatNumber(n){ return n.toLocaleString('en-US'); }
+  function countUp(el){
+    var to = parseFloat(el.getAttribute('data-count-to'));
+    var suffix = el.getAttribute('data-suffix') || '';
+    if (reduceMotion || !('requestAnimationFrame' in window)) { el.textContent = formatNumber(to) + suffix; return; }
+    var dur = 1300, start = null;
+    function step(ts){
+      if (!start) start = ts;
+      var p = Math.min((ts - start) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = formatNumber(Math.round(to * eased)) + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  var counters = document.querySelectorAll('[data-count-to]');
+  if (counters.length) {
+    if ('IntersectionObserver' in window) {
+      var cio = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){ if (entry.isIntersecting) { countUp(entry.target); cio.unobserve(entry.target); } });
+      }, { threshold: 0.6 });
+      counters.forEach(function(el){ cio.observe(el); });
+    } else {
+      counters.forEach(function(el){ countUp(el); });
+    }
+  }
+
+  /* ---------- header scroll state ---------- */
+  var header = document.querySelector('header');
+  var rail = document.querySelector('.rail');
+  window.addEventListener('scroll', function(){
+    var y = window.scrollY;
+    if (header) header.classList.toggle('scrolled', y > 10);
+    if (rail) rail.classList.toggle('visible', y > 420);
+  }, { passive: true });
+
+  /* ---------- section rail active state ---------- */
+  if (rail) {
+    var railLinks = Array.prototype.slice.call(rail.querySelectorAll('a'));
+    var railTargets = railLinks.map(function(a){ return document.querySelector(a.getAttribute('href')); });
+    if ('IntersectionObserver' in window) {
+      var railIO = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          var idx = railTargets.indexOf(entry.target);
+          if (entry.isIntersecting && idx > -1) {
+            railLinks.forEach(function(l){ l.classList.remove('active'); });
+            railLinks[idx].classList.add('active');
+          }
+        });
+      }, { rootMargin: '-45% 0px -45% 0px' });
+      railTargets.forEach(function(t){ if (t) railIO.observe(t); });
+    }
+  }
+
+  /* ---------- magnetic buttons ---------- */
+  if (!reduceMotion && hoverCapable) {
+    document.querySelectorAll('.btn-magnetic').forEach(function(btn){
+      btn.addEventListener('pointermove', function(e){
+        var r = btn.getBoundingClientRect();
+        var x = e.clientX - r.left - r.width / 2;
+        var y = e.clientY - r.top - r.height / 2;
+        btn.style.transform = 'translate(' + (x * 0.22).toFixed(1) + 'px,' + (y * 0.32).toFixed(1) + 'px)';
+      });
+      btn.addEventListener('pointerleave', function(){ btn.style.transform = ''; });
+    });
+  }
+
+  /* ---------- tilt cards ---------- */
+  if (!reduceMotion && hoverCapable) {
+    document.querySelectorAll('.tilt').forEach(function(card){
+      card.addEventListener('pointermove', function(e){
+        var r = card.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width - 0.5;
+        var py = (e.clientY - r.top) / r.height - 0.5;
+        card.style.transform = 'perspective(800px) rotateX(' + (-py * 4.5).toFixed(2) + 'deg) rotateY(' + (px * 5.5).toFixed(2) + 'deg)';
+      });
+      card.addEventListener('pointerleave', function(){ card.style.transform = ''; });
+    });
+  }
+})();
+</script>
+<script type="module" src="hero-spline-widget.js?v=8"></script>
+</body>
+</html>
