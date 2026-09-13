@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pramath-ramekar.github.io/arica-ai-landing-page/sitemap.xml

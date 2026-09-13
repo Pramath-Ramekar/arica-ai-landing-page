@@ -21513,31 +21513,12 @@ function _({ scene: e, className: t }) {
 //#endregion
 //#region src/components/HeroSplineDemo.tsx
 function v() {
-	return /* @__PURE__ */ (0, h.jsxs)("div", {
-		className: "relative w-full min-h-[560px]",
-		children: [/* @__PURE__ */ (0, h.jsxs)("div", {
-			className: "relative z-0 w-full px-8 pt-6 pb-6 flex flex-col items-center text-center min-h-[560px]",
-			children: [/* @__PURE__ */ (0, h.jsx)("span", {
-				className: "font-mono text-[11px] tracking-[0.14em] uppercase text-[#ff7049]",
-				children: "AI Security Testing"
-			}), /* @__PURE__ */ (0, h.jsxs)("h1", {
-				className: "mt-3 whitespace-nowrap text-3xl md:text-4xl lg:text-5xl font-medium leading-[0.98] tracking-tight text-[#f2f1eb]",
-				children: [
-					"Shipped fast.",
-					" ",
-					/* @__PURE__ */ (0, h.jsx)("span", {
-						className: "text-[#a3a29a]",
-						children: "Tested by no one."
-					})
-				]
-			})]
-		}), /* @__PURE__ */ (0, h.jsx)("div", {
-			className: "absolute inset-0 z-10 translate-y-8 pointer-events-none [mask-image:linear-gradient(to_left,black_40%,transparent_82%)] [-webkit-mask-image:linear-gradient(to_left,black_40%,transparent_82%)]",
-			children: /* @__PURE__ */ (0, h.jsx)(_, {
-				scene: "https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode",
-				className: "w-full h-full"
-			})
-		})]
+	return /* @__PURE__ */ (0, h.jsx)("div", {
+		className: "absolute inset-0 z-10 translate-y-8 pointer-events-none [mask-image:linear-gradient(to_left,black_40%,transparent_82%)] [-webkit-mask-image:linear-gradient(to_left,black_40%,transparent_82%)]",
+		children: /* @__PURE__ */ (0, h.jsx)(_, {
+			scene: "https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode",
+			className: "w-full h-full"
+		})
 	});
 }
 //#endregion
