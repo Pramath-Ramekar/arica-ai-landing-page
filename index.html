@@ -25,14 +25,15 @@
     HeroSplineDemo.tsx and rebuild once a real one exists). It's a multi-MB
     WebGPU/physics runtime across ~104 code-split files, and a Lighthouse
     run showed its JS execution alone (~16s of main-thread blocking) tanking
-    the performance score regardless of when it was scheduled — deferring it
-    with requestIdleCallback still ran that JS during the same audit, it
-    just ran later. So it now loads only on the first sign of deliberate
-    engagement (click/touch/key — see the script before </body>), not on a
-    timer and not on scroll/pointer-move, since Lighthouse's own
-    full-page-screenshot capture scrolls the page on every run and was
-    satisfying that gate itself: purely decorative, nothing user-facing
-    waits on it, and a visitor who never interacts never downloads it.
+    the mobile/throttled performance score regardless of when it was
+    scheduled — deferring it with requestIdleCallback still ran that JS
+    during the same audit, it just ran later, and gating it behind a
+    scroll/pointer/click/touch/key listener either got triggered by
+    Lighthouse's own automated interaction or left real visitors never
+    seeing it without a deliberate click. It now loads unconditionally
+    (see the script before </body>): every visitor sees the figure
+    immediately, same as any other hero graphic, at the cost of a lower
+    mobile Lighthouse performance score.
   - All motion in the rest of the page (reveals, count-ups, tilt, magnetic
     buttons) checks prefers-reduced-motion and pointer capability first.
 -->
@@ -951,14 +952,13 @@
           <span class="hero-eyebrow">AI Security Testing</span>
           <h1 class="hero-headline">Shipped fast. <span class="dim">Tested by no one.</span></h1>
         </div>
-        <!-- Mounted lazily by hero-spline-widget.js (React + @splinetool/react-spline):
+        <!-- Mounted by hero-spline-widget.js (React + @splinetool/react-spline):
              a purely decorative 3D figure layered on top of the static copy above.
-             Loaded on first click/touch/key (see script near </body>), not on
-             scroll/pointer-move (Lighthouse's own screenshot capture scrolls the
-             page and would satisfy that gate itself) and not on a timer, so the
-             multi-MB Spline runtime never executes during a page load nobody
-             interacts with, and never blocks first paint or the headline's
-             crawlability. -->
+             Loaded unconditionally on every page view (see script near </body>) so
+             every visitor sees it, at the cost of the multi-MB Spline runtime's JS
+             execution counting against the mobile/throttled Lighthouse performance
+             score. The static headline above never depends on it, so first paint
+             and crawlability are unaffected either way. -->
         <div id="hero-spline-root"></div>
       </div>
     </div>
@@ -1394,41 +1394,24 @@
 
 // The hero's 3D widget (CSS + JS, several MB of a WebGPU/physics runtime
 // across ~104 chunk files) is purely decorative — the headline above is
-// already static HTML, so nothing user-facing depends on it. Loading it on
-// a timer (even an idle one) still means every visitor's browser pays for
-// downloading and executing that whole runtime, which is what was driving
-// ~16s of main-thread blocking and ~29s to interactive: the JS ran
-// eventually regardless of how it was scheduled.
-//
-// Instead it loads only on the first sign of real engagement — a click,
-// a touch, or a key press (scroll and pointer-move are deliberately left
-// out; see the note below the trigger list). A visitor who never does any
-// of those never pays the cost, same as one who lands and leaves; a visitor
-// who does gets the 3D figure within a moment of starting to use the page.
-var heroWidgetLoaded = false;
-function loadHeroWidget(){
-  if (heroWidgetLoaded) return;
-  heroWidgetLoaded = true;
-  var css = document.createElement('link');
-  css.rel = 'stylesheet';
-  css.href = 'hero-spline-widget.css?v=10';
-  document.head.appendChild(css);
+// already static HTML, so nothing user-facing depends on it. It's loaded
+// unconditionally so every visitor sees it immediately, same as any other
+// hero graphic; this is a deliberate trade against Lighthouse's mobile/
+// throttled performance score, which will mark it down for the JS
+// execution time (previously ~16s of main-thread blocking under 4x CPU
+// throttle). Gating the load behind scroll/pointer/click/touch/key was
+// tried and rolled back — it either got triggered by Lighthouse's own
+// automated interaction (scroll, during full-page-screenshot capture) or
+// left real visitors never seeing the figure without a deliberate click.
+var css = document.createElement('link');
+css.rel = 'stylesheet';
+css.href = 'hero-spline-widget.css?v=10';
+document.head.appendChild(css);
 
-  var script = document.createElement('script');
-  script.type = 'module';
-  script.src = 'hero-spline-widget.js?v=10';
-  document.body.appendChild(script);
-}
-// 'scroll' and 'pointermove' are deliberately excluded: Lighthouse's
-// full-page-screenshot capture programmatically scrolls the page on every
-// run (desktop and mobile alike), producing a genuine trusted 'scroll'
-// event indistinguishable from a real visitor — which is why the widget
-// was still loading during automated audits despite this gate. 'click',
-// 'touchstart' and 'keydown' are signals a default Lighthouse navigation
-// audit never produces.
-['click', 'touchstart', 'keydown'].forEach(function(evt){
-  window.addEventListener(evt, loadHeroWidget, { once: true, passive: true });
-});
+var script = document.createElement('script');
+script.type = 'module';
+script.src = 'hero-spline-widget.js?v=10';
+document.body.appendChild(script);
 </script>
 </body>
 </html>
